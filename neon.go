@@ -6,6 +6,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"io"
+	"log"
 	"log/slog"
 	"math"
 	"net/http"
@@ -86,13 +87,18 @@ func (t *retryableTransport) RoundTrip(req *http.Request) (*http.Response, error
 	}
 	// Send the request
 	resp, err := t.transport.RoundTrip(req)
+	if err != nil {
+		log.Println(err)
+	}
 	// Retry logic
 	retries := 0
 	for shouldRetry(err, resp) && retries < RetryCount {
 		// Wait for the specified backoff period
 		time.Sleep(backoff(retries))
 		// We're going to retry, consume any response to reuse the connection.
-		drainBody(resp)
+		if resp != nil {
+			drainBody(resp)
+		}
 		// Clone the request body again
 		if req.Body != nil {
 			req.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
