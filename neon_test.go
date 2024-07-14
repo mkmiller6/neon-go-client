@@ -10,7 +10,7 @@ import (
 func TestBackendCall(t *testing.T) {
 	backend := neon.GetBackendWithConfig()
 
-	nc := client.New("asmbly", "", backend)
+	nc := client.New("", "", backend)
 
 	t.Run("get an account", func(t *testing.T) {
 		acct, _ := nc.Accounts.GetByID(1743)
