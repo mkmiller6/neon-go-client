@@ -65,19 +65,22 @@ type FinancialSettings struct {
 	Donations              *FinancialSettingsDonations `json:"donations,omitempty"`
 }
 
-type CustomDateJson time.Time
+type CustomDateJson struct {
+	time.Time
+}
 
-func (c *CustomDateJson) UnmarshalJSON(b []byte) error {
+func (c *CustomDateJson) UnmarshalJSON(b []byte) (err error) {
 	s := strings.Trim(string(b), "\"")
 
-	t, err := time.Parse("2006-01-02", s)
-	if err != nil {
-		return err
+	if s == "null" {
+		c.Time = time.Time{}
+		return
 	}
-	*c = CustomDateJson(t)
-	return nil
+
+	c.Time, err = time.Parse("2006-01-02", s)
+	return
 }
 
 func (c CustomDateJson) MarshalJSON() ([]byte, error) {
-	return json.Marshal(time.Time(c))
+	return json.Marshal(time.Time(c.Time))
 }
