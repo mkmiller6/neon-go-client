@@ -8,7 +8,11 @@
  */
 package neon
 
-import "time"
+import (
+	"encoding/json"
+	"strings"
+	"time"
+)
 
 type Event struct {
 	Id                          string             `json:"id,omitempty"`
@@ -31,13 +35,13 @@ type Event struct {
 }
 
 type EventDates struct {
-	StartDate             time.Time   `json:"startDate,omitempty"`
-	EndDate               time.Time   `json:"endDate,omitempty"`
-	StartTime             string      `json:"startTime,omitempty"`
-	EndTime               string      `json:"endTime,omitempty"`
-	RegistrationOpenDate  time.Time   `json:"registrationOpenDate,omitempty"`
-	RegistrationCloseDate time.Time   `json:"registrationCloseDate,omitempty"`
-	TimeZone              *IdNamePair `json:"timeZone,omitempty"`
+	StartDate             CustomDateJson `json:"startDate,omitempty"`
+	EndDate               CustomDateJson `json:"endDate,omitempty"`
+	StartTime             string         `json:"startTime,omitempty"`
+	EndTime               string         `json:"endTime,omitempty"`
+	RegistrationOpenDate  CustomDateJson `json:"registrationOpenDate,omitempty"`
+	RegistrationCloseDate CustomDateJson `json:"registrationCloseDate,omitempty"`
+	TimeZone              *IdNamePair    `json:"timeZone,omitempty"`
 }
 
 type Location struct {
@@ -59,4 +63,21 @@ type FinancialSettings struct {
 	Fund                   *IdNamePair                 `json:"fund,omitempty"`
 	TaxDeductiblePortion   *TaxDeductiblePortion       `json:"taxDeductiblePortion,omitempty"`
 	Donations              *FinancialSettingsDonations `json:"donations,omitempty"`
+}
+
+type CustomDateJson time.Time
+
+func (c *CustomDateJson) UnmarshalJSON(b []byte) error {
+	s := strings.Trim(string(b), "\"")
+
+	t, err := time.Parse("2006-01-02", s)
+	if err != nil {
+		return err
+	}
+	*c = CustomDateJson(t)
+	return nil
+}
+
+func (c CustomDateJson) MarshalJSON() ([]byte, error) {
+	return json.Marshal(time.Time(c))
 }
