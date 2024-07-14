@@ -22,9 +22,9 @@ type API struct {
 
 func (a *API) init(user, apiKey string, backend neon.Backend) {
 	a.Accounts = accounts.NewClient(user, apiKey, backend)
-	a.Events = events.NewClient(user, apiKey)
-	a.EventRegistrations = eventregistrations.NewClient(user, apiKey)
-	a.Memberships = memberships.NewClient(user, apiKey)
+	a.Events = events.NewClient(user, apiKey, backend)
+	a.EventRegistrations = eventregistrations.NewClient(user, apiKey, backend)
+	a.Memberships = memberships.NewClient(user, apiKey, backend)
 }
 
 func New(user, apiKey string, backend neon.Backend) *API {
