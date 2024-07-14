@@ -48,14 +48,14 @@ func (c *Client) GetByID(id int) (*neon.Account, error) {
 	return account, nil
 }
 
-func (c *Client) Search(params *neon.SearchParams) *SearchIter {
-	return &SearchIter{
-		SearchIter: neon.GetSearchIter(params, func(p *neon.Params) neon.SearchContainer {
-			list := &neon.AccountSearchResult{}
-			return list
-		}),
-	}
-}
+// func (c *Client) Search(params *neon.SearchParams) *SearchIter {
+// 	return &SearchIter{
+// 		SearchIter: neon.GetSearchIter(params, func(p *neon.Params) neon.SearchContainer {
+// 			list := &neon.AccountSearchResult{}
+// 			return list
+// 		}),
+// 	}
+// }
 
 // Search iterator for accounts
 type SearchIter struct {
