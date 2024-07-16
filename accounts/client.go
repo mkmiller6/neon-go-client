@@ -33,6 +33,10 @@ func (c *Client) GetByID(id int) (*neon.Account, error) {
 	}
 	defer resp.Body.Close()
 
+	if resp.StatusCode != 200 {
+		return nil, fmt.Errorf("neon: error getting account, status code: %d, message: %s", resp.StatusCode, resp.Status)
+	}
+
 	respBody, err := io.ReadAll(resp.Body)
 
 	if err != nil {
